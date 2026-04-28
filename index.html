@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rawatan Haiwan Pintar</title>
+    <title>Sistem Veterinar Pintar</title>
     <style>
-        /* Latar Belakang Biru Cair */
         body {
             background-color: #e3f2fd;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,10 +16,9 @@
             padding: 20px;
         }
 
-        /* Tulisan Bold Glow Biru Pekat */
         h1, h2, h3 {
             color: #0d47a1;
-            text-shadow: 0 0 10px rgba(13, 71, 161, 0.4);
+            text-shadow: 0 0 10px rgba(13, 71, 161, 0.3);
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
@@ -30,15 +28,10 @@
             background: white;
             padding: 30px;
             border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
             max-width: 600px;
             width: 100%;
             text-align: center;
-        }
-
-        /* Input Command Box */
-        .command-section {
-            margin-bottom: 25px;
         }
 
         input[type="text"] {
@@ -49,10 +42,8 @@
             font-weight: bold;
             color: #0d47a1;
             outline: none;
-            font-size: 16px;
         }
 
-        /* Paparan Haiwan (Emoji) */
         .animal-row {
             display: flex;
             justify-content: center;
@@ -61,14 +52,9 @@
             margin: 20px 0;
         }
 
-        .animal-icon {
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
+        .animal-icon { cursor: pointer; transition: 0.3s; }
         .animal-icon:hover { transform: scale(1.3); }
 
-        /* Modal Pop-up Style */
         .modal {
             display: none;
             position: fixed;
@@ -88,10 +74,38 @@
             max-width: 450px;
             border-radius: 25px;
             box-shadow: 0 0 30px #0d47a1;
-            position: relative;
         }
 
-        /* Symptom Boxes */
+        /* CUSTOM POP-UP JAWAPAN */
+        #customAlert {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e3f2fd;
+            border: 4px solid #0d47a1;
+            box-shadow: 0 0 20px #0d47a1;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 300px;
+        }
+
+        #customAlert h2 {
+            color: #0d47a1;
+            font-weight: bold;
+            margin-top: 0;
+            text-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
+        }
+
+        #alertMessage {
+            color: #0d47a1;
+            font-weight: bold;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
         .symptom-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -107,12 +121,11 @@
             cursor: pointer;
             font-weight: bold;
             color: #0d47a1;
-            transition: 0.3s;
+            text-align: center;
         }
 
         .sym-box.active { background: #0d47a1; color: white; }
 
-        /* Ubat List */
         .med-item {
             background: #bbdefb;
             margin: 8px 0;
@@ -122,9 +135,9 @@
             font-weight: bold;
             color: #0d47a1;
             border-left: 6px solid #0d47a1;
+            text-align: left;
         }
 
-        /* Calculator Section */
         #calcArea {
             background: #0d47a1;
             color: white;
@@ -134,21 +147,10 @@
             display: none;
         }
 
-        .input-row { margin-bottom: 10px; text-align: left; }
+        .input-row { margin-bottom: 15px; text-align: left; }
         .input-row input { 
-            width: 100%; padding: 8px; border-radius: 8px; border: none; font-weight: bold; margin-top: 5px;
+            width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; box-sizing: border-box; margin-top: 5px;
         }
-
-        /* Dua Box Kepekatan */
-        .strength-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 5px;
-        }
-
-        .strength-box { flex: 1; }
-        .strength-box label { font-size: 0.8em; }
 
         .btn {
             background: #0d47a1;
@@ -159,202 +161,106 @@
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
-            font-size: 16px;
+            margin-top: 10px;
         }
 
         .btn-kira { background: #4caf50; }
         .btn-tutup { background: #f44336; }
-
-        #finalResult {
-            background: #ffeb3b;
-            color: #0d47a1;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            display: none;
-            font-size: 20px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
 
 <div class="main-container">
-    <h1>Sistem Veterinar Pintar</h1>
-    
-    <div class="command-section">
-        <p style="color: #0d47a1; font-weight: bold;">Taip Jenis Haiwan:</p>
-        <input type="text" id="animalCmd" placeholder="cth: Lembu, Kucing..." oninput="handleCommand()">
+    <h1>VET CALCULATOR PRO</h1>
+    <div style="margin-bottom: 20px;">
+        <p style="color: #0d47a1; font-weight: bold;">Taip Nama Haiwan:</p>
+        <input type="text" id="animalCmd" placeholder="Kucing, Lembu, dll..." oninput="handleCommand()">
     </div>
-
     <div class="animal-row">
-        <span class="animal-icon" onclick="openApp('Kucing')">🐱</span>
-        <span class="animal-icon" onclick="openApp('Anjing')">🐕</span>
-        <span class="animal-icon" onclick="openApp('Lembu')">🐄</span>
-        <span class="animal-icon" onclick="openApp('Kambing')">🐐</span>
-        <span class="animal-icon" onclick="openApp('Ayam')">🐓</span>
+        <span class="animal-icon" onclick="openApp('KUCING')">🐱</span>
+        <span class="animal-icon" onclick="openApp('ANJING')">🐕</span>
+        <span class="animal-icon" onclick="openApp('LEMBU')">🐄</span>
+        <span class="animal-icon" onclick="openApp('KAMBING')">🐐</span>
+        <span class="animal-icon" onclick="openApp('AYAM')">🐓</span>
     </div>
-    <p style="font-weight: bold; color: #0d47a1;">Atau klik pada ikon di atas</p>
 </div>
 
 <!-- Modal Rawatan -->
 <div id="treatmentModal" class="modal">
     <div class="modal-content">
-        <h2 id="modalTitle">Rawatan Haiwan</h2>
-        
+        <h2 id="modalTitle">Rawatan</h2>
         <div class="symptom-grid">
-            <div class="sym-box" onclick="toggleSym(this, 'Cacing')">Cacing / Kurus</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Pernafasan')">Selsema / Batuk</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Kulit')">Kurap / Kutu</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Cirit')">Cirit-Birit</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Cacing')">Cacing</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Pernafasan')">Selsema</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Kulit')">Kurap</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Cirit')">Cirit</div>
         </div>
-
         <div id="medListSection" style="display:none;">
-            <h3>Klik Ubat Untuk Kira:</h3>
             <div id="medOptions"></div>
         </div>
-
-        <!-- Kalkulator -->
         <div id="calcArea">
-            <h3 style="color:white; margin:0 0 15px 0;">Kalkulator Dos</h3>
-            
-            <div class="input-row">
-                <label>Berat Haiwan (kg):</label>
-                <input type="number" id="weight" placeholder="cth: 20">
+            <div class="input-row"><label>Berat Haiwan (kg):</label><input type="number" id="weight"></div>
+            <div class="input-row"><label>Dose Diperlukan (mg/kg):</label><input type="number" id="dose_req"></div>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="str_mg" placeholder="mg/ml" oninput="autoClear('pct')">
+                <input type="number" id="str_pct" placeholder="%" oninput="autoClear('mg')">
             </div>
-            
-            <div class="input-row">
-                <label>Dos (mg/kg):</label>
-                <input type="number" id="dosage" placeholder="cth: 0.2">
-            </div>
-
-            <label>Kepekatan Ubat (Isi satu kotak sahaja):</label>
-            <div class="strength-container">
-                <div class="strength-box">
-                    <label>Box mg/ml</label>
-                    <input type="number" id="str_mg" placeholder="mg/ml" oninput="autoClear('pct')">
-                </div>
-                <div style="font-weight:bold;">ATAU</div>
-                <div class="strength-box">
-                    <label>Box %</label>
-                    <input type="number" id="str_pct" placeholder="%" oninput="autoClear('mg')">
-                </div>
-            </div>
-
             <button class="btn btn-kira" onclick="calculateDosage()">KIRA SEKARANG</button>
         </div>
-
-        <div id="finalResult"></div>
-        
         <button class="btn btn-tutup" onclick="closeApp()">TUTUP</button>
     </div>
 </div>
 
+<!-- POP-UP JAWAPAN TEMA BIRU -->
+<div id="customAlert">
+    <h2>HASIL KIRAAN</h2>
+    <div id="alertMessage">0.00 ml</div>
+    <button class="btn" onclick="closeAlert()">OK</button>
+</div>
+
 <script>
+    let selectedAnimal = "";
     let activeSymptoms = [];
     const medicineDb = {
-        'Cacing': ['Ivermectin 1%', 'Albendazole Oral', 'Zantel Tablet'],
-        'Pernafasan': ['Oxytetracycline LA', 'Doxycycline', 'Enrofloxacin'],
-        'Kulit': ['Ketoconazole', 'Spot-on Revolution', 'Amitraz Dip'],
-        'Cirit': ['Kaolin-Pectin', 'Charcoal Suspension', 'Stress-Aid']
+        'KUCING': {'Cacing': ['Drontal Cat', 'Zantel'], 'Pernafasan': ['Doxycycline'], 'Kulit': ['Ketoconazole'], 'Cirit': ['Norit']},
+        'LEMBU': {'Cacing': ['Albendazole', 'Ivermectin'], 'Pernafasan': ['Oxytetracycline LA'], 'Kulit': ['Gusanex'], 'Cirit': ['Electrolyte']},
+        'ANJING': {'Cacing': ['Drontal Dog'], 'Pernafasan': ['Amoxicillin'], 'Kulit': ['Bravecto'], 'Cirit': ['Metronidazole']},
+        'KAMBING': {'Cacing': ['Albendazole'], 'Pernafasan': ['Tylosin'], 'Kulit': ['Iodine'], 'Cirit': ['Butasyl']},
+        'AYAM': {'Cacing': ['Piperazine'], 'Pernafasan': ['Enrofloxacin'], 'Kulit': ['Iodine'], 'Cirit': ['Sulpha-Q']}
     };
 
-    // Fungsi Input Command
     function handleCommand() {
-        let input = document.getElementById('animalCmd').value.toLowerCase();
-        let valid = ['kucing', 'anjing', 'lembu', 'kambing', 'ayam'];
-        if(valid.includes(input)) {
-            openApp(input.toUpperCase());
-            document.getElementById('animalCmd').value = ""; // clear input
-        }
+        let input = document.getElementById('animalCmd').value.toUpperCase();
+        if(medicineDb[input]) { openApp(input); document.getElementById('animalCmd').value = ""; }
     }
-
-    function openApp(animalName) {
-        document.getElementById('modalTitle').innerText = "Simptom " + animalName;
-        document.getElementById('treatmentModal').style.display = "block";
-        resetFields();
-    }
-
-    function closeApp() {
-        document.getElementById('treatmentModal').style.display = "none";
-    }
-
-    function toggleSym(el, sym) {
-        el.classList.toggle('active');
-        if(activeSymptoms.includes(sym)) {
-            activeSymptoms = activeSymptoms.filter(item => item !== sym);
-        } else {
-            activeSymptoms.push(sym);
-        }
-        updateMedList();
-    }
-
+    function openApp(name) { selectedAnimal = name; document.getElementById('modalTitle').innerText = "Rawatan " + name; document.getElementById('treatmentModal').style.display = "block"; resetFields(); }
+    function closeApp() { document.getElementById('treatmentModal').style.display = "none"; }
+    function toggleSym(el, sym) { el.classList.toggle('active'); if(activeSymptoms.includes(sym)) activeSymptoms = activeSymptoms.filter(i => i !== sym); else activeSymptoms.push(sym); updateMedList(); }
     function updateMedList() {
-        const listDiv = document.getElementById('medOptions');
-        listDiv.innerHTML = "";
-        if(activeSymptoms.length === 0) {
-            document.getElementById('medListSection').style.display = "none";
-            return;
-        }
-
-        activeSymptoms.forEach(s => {
-            medicineDb[s].forEach(med => {
-                let div = document.createElement('div');
-                div.className = 'med-item';
-                div.innerText = med;
-                div.onclick = () => { document.getElementById('calcArea').style.display = "block"; };
-                listDiv.appendChild(div);
-            });
-        });
+        const listDiv = document.getElementById('medOptions'); listDiv.innerHTML = "";
+        if(activeSymptoms.length === 0) { document.getElementById('medListSection').style.display = "none"; return; }
+        activeSymptoms.forEach(s => { if(medicineDb[selectedAnimal][s]) { medicineDb[selectedAnimal][s].forEach(med => {
+            let div = document.createElement('div'); div.className = 'med-item'; div.innerText = "[" + s + "] " + med;
+            div.onclick = () => { document.getElementById('calcArea').style.display = "block"; }; listDiv.appendChild(div);
+        });}});
         document.getElementById('medListSection').style.display = "block";
     }
-
-    function autoClear(type) {
-        if(type === 'pct') document.getElementById('str_pct').value = "";
-        if(type === 'mg') document.getElementById('str_mg').value = "";
-    }
-
+    function autoClear(type) { if(type === 'pct') document.getElementById('str_pct').value = ""; else document.getElementById('str_mg').value = ""; }
+    
     function calculateDosage() {
         const w = parseFloat(document.getElementById('weight').value);
-        const d = parseFloat(document.getElementById('dosage').value);
+        const d = parseFloat(document.getElementById('dose_req').value);
         const mg = parseFloat(document.getElementById('str_mg').value);
         const pct = parseFloat(document.getElementById('str_pct').value);
-        
-        let strength = 0;
-        if(mg > 0) strength = mg;
-        else if(pct > 0) strength = pct * 10;
-
-        if(w > 0 && d > 0 && strength > 0) {
-            const result = (w * d) / strength;
-            const finalResultText = result.toFixed(2) + " ml";
-            
-            const resDiv = document.getElementById('finalResult');
-            resDiv.innerHTML = "KEPUTUSAN: <br>Gunakan " + finalResultText;
-            resDiv.style.display = "block";
-            
-            alert("SISTEM KIRAAN:\nJumlah ubat diperlukan: " + finalResultText);
-        } else {
-            alert("Sila isi Berat, Dos dan salah satu kotak Kepekatan!");
-        }
+        let s = mg > 0 ? mg : pct * 10;
+        if(w > 0 && d > 0 && s > 0) {
+            let res = ((w * d) / s).toFixed(2) + " ml";
+            document.getElementById('alertMessage').innerText = res;
+            document.getElementById('customAlert').style.display = "block";
+        } else { alert("Sila isi semua maklumat!"); }
     }
-
-    function resetFields() {
-        activeSymptoms = [];
-        document.querySelectorAll('.sym-box').forEach(b => b.classList.remove('active'));
-        document.getElementById('medListSection').style.display = "none";
-        document.getElementById('calcArea').style.display = "none";
-        document.getElementById('finalResult').style.display = "none";
-        document.querySelectorAll('input').forEach(i => i.value = "");
-    }
-
-    // Fungsi Enter Key
-    window.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' && document.getElementById('treatmentModal').style.display === "block") {
-            calculateDosage();
-        }
-    });
+    function closeAlert() { document.getElementById('customAlert').style.display = "none"; }
+    function resetFields() { activeSymptoms = []; document.querySelectorAll('.sym-box').forEach(b => b.classList.remove('active')); document.getElementById('medListSection').style.display = "none"; document.getElementById('calcArea').style.display = "none"; document.querySelectorAll('input').forEach(i => i.value = ""); }
 </script>
-
 </body>
 </html>
