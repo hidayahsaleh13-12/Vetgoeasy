@@ -1,223 +1,52 @@
-<!DOCTYPE html>
-<html lang="ms">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klinik Haiwan & Kalkulator Dos</title>
-    <style>
-        /* Latar Belakang Biru Cair */
-        body {
-            background-color: #e3f2fd;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        /* Tulisan Bold Glow Biru Pekat */
-        h1, h2, h3 {
-            color: #0d47a1;
-            text-shadow: 0 0 12px rgba(13, 71, 161, 0.4);
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .main-card {
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            max-width: 800px;
-            width: 100%;
-        }
-
-        /* Menu Haiwan */
-        .animal-bar {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-
-        .animal-btn {
-            cursor: pointer;
-            text-align: center;
-            transition: 0.3s;
-            padding: 10px;
-        }
-
-        .animal-btn:hover { transform: translateY(-10px); }
-
-        .animal-btn img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid #0d47a1;
-            padding: 5px;
-            background: #fff;
-        }
-
-        /* Modal Pop-up */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: #f0f8ff;
-            margin: 2% auto;
-            padding: 25px;
-            border: 4px solid #0d47a1;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 20px;
-            box-shadow: 0 0 30px #0d47a1;
-        }
-
-        /* Grid Simptom */
-        .symptom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .sym-box {
-            background: #fff;
-            border: 2px solid #0d47a1;
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #0d47a1;
-            text-align: center;
-        }
-
-        .sym-box.active {
-            background: #0d47a1;
-            color: #fff;
-        }
-
-        /* Senarai Ubat */
-        .med-item {
-            background: #bbdefb;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            list-style: none;
-            font-weight: bold;
-            border-left: 5px solid #0d47a1;
-        }
-
-        .med-item:hover { background: #90caf9; }
-
-        /* Kalkulator Dos */
-        #calcBox {
-            margin-top: 20px;
-            padding: 15px;
-            background: #0d47a1;
-            color: white;
-            border-radius: 15px;
-            display: none;
-        }
-
-        input {
-            width: 80px;
-            padding: 5px;
-            margin: 5px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .result-display {
-            font-size: 1.5em;
-            color: #ffeb3b;
-            text-align: center;
-            margin-top: 10px;
-            display: block;
-        }
-
-        .btn {
-            background: #0d47a1;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="main-card">
-    <h1>SISTEM VETERINAR PINTAR</h1>
-    <p style="text-align:center; color:#0d47a1;">Klik pada haiwan untuk mula:</p>
+<!-- Kalkulator Dos Dengan Pilihan Unit -->
+<div id="calcBox">
+    <h3 style="color:white; text-shadow:none;">Kalkulator Dos <span id="activeMed"></span></h3>
     
-    <div class="animal-bar">
-        <div class="animal-btn" onclick="openClinic('Kucing')"><img src="https://flaticon.com" alt="Kucing"><br><b>Kucing</b></div>
-        <div class="animal-btn" onclick="openClinic('Anjing')"><img src="https://flaticon.com" alt="Anjing"><br><b>Anjing</b></div>
-        <div class="animal-btn" onclick="openClinic('Lembu')"><img src="https://flaticon.com" alt="Lembu"><br><b>Lembu</b></div>
-        <div class="animal-btn" onclick="openClinic('Kambing')"><img src="https://flaticon.com" alt="Kambing"><br><b>Kambing</b></div>
-        <div class="animal-btn" onclick="openClinic('Ayam')"><img src="https://flaticon.com" alt="Ayam"><br><b>Ayam</b></div>
-    </div>
-</div>
+    <label>Berat Haiwan (kg):</label><br>
+    <input type="number" id="weight" placeholder="0"> kg<br>
+    
+    <label>Dos Diperlukan (mg/kg):</label><br>
+    <input type="number" id="dosage" placeholder="cth: 5"> mg/kg<br>
 
-<!-- Modal -->
-<div id="clinicModal" class="modal">
-    <div class="modal-content">
-        <h2 id="title">Pilih Simptom</h2>
-        
-        <div class="symptom-grid" id="symGrid">
-            <div class="sym-box" onclick="toggleSym(this, 'Cacing')">Cacing / Kurus</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Selsema')">Selsema / Nafas</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Kulit')">Kurap / Kutu</div>
-            <div class="sym-box" onclick="toggleSym(this, 'Cirit')">Cirit-Birit</div>
-        </div>
+    <label>Pilih Unit Kepekatan:</label><br>
+    <select id="unitType" onchange="updatePlaceholder()" style="padding:5px; border-radius:5px; margin-bottom:10px; font-weight:bold;">
+        <option value="mgml">mg/ml</option>
+        <option value="percent">% (Peratus)</option>
+    </select><br>
 
-        <button class="btn" onclick="generateMeds()">CARI UBAT</button>
-
-        <div id="medListSection" style="margin-top:20px; display:none;">
-            <h3>Klik ubat untuk kira dos:</h3>
-            <div id="medOptions"></div>
-        </div>
-
-        <!-- Kalkulator Dos -->
-        <div id="calcBox">
-            <h3 style="color:white; text-shadow:none;">Kalkulator Dos <span id="activeMed"></span></h3>
-            <label>Berat Haiwan (kg):</label><br>
-            <input type="number" id="weight" placeholder="0"> kg<br>
-            
-            <label>Dos Diperlukan (mg/kg):</label><br>
-            <input type="number" id="dosage" placeholder="cth: 5"> mg/kg<br>
-
-            <label>Kepekatan Ubat (mg/ml):</label><br>
-            <input type="number" id="strength" placeholder="cth: 100"> mg/ml<br>
-            
-            <button class="btn" style="background:#4caf50;" onclick="calculate()">KIRA SEKARANG</button>
-            <span class="result-display" id="finalResult">0.00 ml</span>
-        </div>
-
-        <button class="btn" style="background:#f44336; margin-top:20px;" onclick="closeModal()">TUTUP</button>
+    <input type="number" id="strength" placeholder="cth: 100"> <span id="unitLabel">mg/ml</span><br>
+    
+    <button class="btn" style="background:#4caf50; margin-top:15px;" onclick="calculate()">KIRA SEKARANG</button>
+    
+    <div style="background:rgba(255,255,255,0.2); padding:10px; border-radius:10px; margin-top:15px;">
+        <span style="font-size:0.9em;">KEPUTUSAN:</span>
+        <span class="result-display" id="finalResult">0.00 ml</span>
     </div>
 </div>
 
 <script>
     let selectedSymptoms = [];
     const medData = {
-        'Cacing': ['Ivermectin 1%', 'Albendazole', 'Zantel'],
+        'Cacing': ['Ivermectin', 'Albendazole', 'Zantel'],
         'Selsema': ['Oxytetracycline LA', 'Doxycycline', 'Enrofloxacin'],
         'Kulit': ['Ketoconazole', 'Spot-on Treatment', 'Amitraz'],
         'Cirit': ['Kaolin-Pectin', 'Charcoal Suspension', 'Sulpha-Q']
     };
+
+    // Fungsi tukar placeholder mengikut unit pilihan
+    function updatePlaceholder() {
+        const type = document.getElementById('unitType').value;
+        const input = document.getElementById('strength');
+        const label = document.getElementById('unitLabel');
+        
+        if(type === "percent") {
+            input.placeholder = "cth: 1";
+            label.innerText = "%";
+        } else {
+            input.placeholder = "cth: 10";
+            label.innerText = "mg/ml";
+        }
+    }
 
     function openClinic(animal) {
         document.getElementById('title').innerText = "Simptom " + animal;
@@ -239,7 +68,7 @@
     function generateMeds() {
         const container = document.getElementById('medOptions');
         container.innerHTML = "";
-        if(selectedSymptoms.length === 0) return alert("Pilih simptom dahulu!");
+        if(selectedSymptoms.length === 0) return alert("Sila pilih simptom dahulu!");
 
         selectedSymptoms.forEach(s => {
             medData[s].forEach(m => {
@@ -256,22 +85,38 @@
     function showCalc(medName) {
         document.getElementById('calcBox').style.display = "block";
         document.getElementById('activeMed').innerText = "- " + medName;
-        document.getElementById('calcBox').scrollIntoView();
+        document.getElementById('calcBox').scrollIntoView({behavior: "smooth"});
     }
 
     function calculate() {
         const w = parseFloat(document.getElementById('weight').value);
         const d = parseFloat(document.getElementById('dosage').value);
-        const s = parseFloat(document.getElementById('strength').value);
+        let s = parseFloat(document.getElementById('strength').value);
+        const type = document.getElementById('unitType').value;
+
+        // Jika user pilih %, tukar ke mg/ml (Darab 10)
+        if(type === "percent") {
+            s = s * 10;
+        }
 
         if(w > 0 && d > 0 && s > 0) {
-            // Formula: (Berat x Dos) / Kepekatan
             const res = (w * d) / s;
-            document.getElementById('finalResult').innerText = res.toFixed(2) + " ml";
+            const finalRes = res.toFixed(2);
+            document.getElementById('finalResult').innerText = finalRes + " ml";
+            
+            // Pop-up jawapan
+            alert("JUMLAH UBAT: " + finalRes + " ml\n\n(Formula: " + w + "kg x " + d + "mg/kg ÷ " + s + "mg/ml)");
         } else {
-            alert("Sila isi semua ruangan dengan betul!");
+            alert("Sila masukkan semua maklumat dengan betul.");
         }
     }
+
+    // Fungsi sokongan Enter Key
+    window.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            calculate();
+        }
+    });
 
     function resetAll() {
         selectedSymptoms = [];
@@ -282,6 +127,3 @@
         document.querySelectorAll('input').forEach(i => i.value = "");
     }
 </script>
-
-</body>
-</html>
