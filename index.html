@@ -3,207 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Diagnosis Haiwan</title>
+    <title>Klinik Haiwan & Kalkulator Dos</title>
     <style>
-        /* Background Biru Cair */
+        /* Latar Belakang Biru Cair */
         body {
             background-color: #e3f2fd;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px;
+            justify-content: center;
+            padding: 40px;
         }
 
         /* Tulisan Bold Glow Biru Pekat */
-        h1, h2 {
+        h1, h2, h3 {
             color: #0d47a1;
-            text-shadow: 0 0 10px rgba(13, 71, 161, 0.5);
+            text-shadow: 0 0 12px rgba(13, 71, 161, 0.4);
             font-weight: bold;
-            text-transform: uppercase;
+            text-align: center;
         }
 
-        .container {
-            text-align: center;
+        .main-card {
             background: white;
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
         }
 
-        /* Gaya Gambar Haiwan */
-        .animal-selection img {
-            width: 100px;
-            height: 100px;
-            margin: 10px;
+        /* Menu Haiwan */
+        .animal-bar {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .animal-btn {
             cursor: pointer;
-            border-radius: 15px;
-            transition: transform 0.3s;
-            border: 3px solid transparent;
+            text-align: center;
+            transition: 0.3s;
+            padding: 10px;
         }
 
-        .animal-selection img:hover {
-            transform: scale(1.1);
-            border-color: #0d47a1;
+        .animal-btn:hover { transform: translateY(-10px); }
+
+        .animal-btn img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #0d47a1;
+            padding: 5px;
+            background: #fff;
         }
 
-        /* Pop-up Style Box */
+        /* Modal Pop-up */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            z-index: 10;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background-color: #f0f8ff;
-            margin: 5% auto;
+            background: #f0f8ff;
+            margin: 2% auto;
             padding: 25px;
-            border: 5px solid #0d47a1;
-            width: 50%;
+            border: 4px solid #0d47a1;
+            width: 90%;
+            max-width: 500px;
             border-radius: 20px;
-            box-shadow: 0 0 20px #0d47a1;
-            position: relative;
+            box-shadow: 0 0 30px #0d47a1;
         }
 
-        /* Box Simptom */
+        /* Grid Simptom */
         .symptom-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin: 20px 0;
         }
 
-        .symptom-box {
-            background: white;
+        .sym-box {
+            background: #fff;
             border: 2px solid #0d47a1;
-            padding: 10px;
+            padding: 12px;
+            border-radius: 12px;
             cursor: pointer;
-            border-radius: 10px;
             font-weight: bold;
             color: #0d47a1;
+            text-align: center;
         }
 
-        .symptom-box.active {
+        .sym-box.active {
             background: #0d47a1;
-            color: white;
+            color: #fff;
         }
 
-        .btn-submit {
-            background: #0d47a1;
-            color: white;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
+        /* Senarai Ubat */
+        .med-item {
+            background: #bbdefb;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
+            list-style: none;
             font-weight: bold;
+            border-left: 5px solid #0d47a1;
         }
 
-        #resultBox {
+        .med-item:hover { background: #90caf9; }
+
+        /* Kalkulator Dos */
+        #calcBox {
             margin-top: 20px;
             padding: 15px;
-            background: #e3f2fd;
-            border-radius: 10px;
-            color: #0d47a1;
-            font-weight: bold;
+            background: #0d47a1;
+            color: white;
+            border-radius: 15px;
             display: none;
+        }
+
+        input {
+            width: 80px;
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .result-display {
+            font-size: 1.5em;
+            color: #ffeb3b;
+            text-align: center;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .btn {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>SISTEM MAKLUMAT UBAT HAIWAN</h1>
-        <p>Sila pilih jenis haiwan:</p>
+<div class="main-card">
+    <h1>SISTEM VETERINAR PINTAR</h1>
+    <p style="text-align:center; color:#0d47a1;">Klik pada haiwan untuk mula:</p>
+    
+    <div class="animal-bar">
+        <div class="animal-btn" onclick="openClinic('Kucing')"><img src="https://flaticon.com" alt="Kucing"><br><b>Kucing</b></div>
+        <div class="animal-btn" onclick="openClinic('Anjing')"><img src="https://flaticon.com" alt="Anjing"><br><b>Anjing</b></div>
+        <div class="animal-btn" onclick="openClinic('Lembu')"><img src="https://flaticon.com" alt="Lembu"><br><b>Lembu</b></div>
+        <div class="animal-btn" onclick="openClinic('Kambing')"><img src="https://flaticon.com" alt="Kambing"><br><b>Kambing</b></div>
+        <div class="animal-btn" onclick="openClinic('Ayam')"><img src="https://flaticon.com" alt="Ayam"><br><b>Ayam</b></div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="clinicModal" class="modal">
+    <div class="modal-content">
+        <h2 id="title">Pilih Simptom</h2>
         
-        <div class="animal-selection">
-            <img src="https://flaticon.com" alt="Kucing" onclick="openSymptom('Kucing')">
-            <img src="https://flaticon.com" alt="Anjing" onclick="openSymptom('Anjing')">
-            <img src="https://flaticon.com" alt="Lembu" onclick="openSymptom('Lembu')">
-            <img src="https://flaticon.com" alt="Kambing" onclick="openSymptom('Kambing')">
-            <img src="https://flaticon.com" alt="Ayam" onclick="openSymptom('Ayam')">
+        <div class="symptom-grid" id="symGrid">
+            <div class="sym-box" onclick="toggleSym(this, 'Cacing')">Cacing / Kurus</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Selsema')">Selsema / Nafas</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Kulit')">Kurap / Kutu</div>
+            <div class="sym-box" onclick="toggleSym(this, 'Cirit')">Cirit-Birit</div>
         </div>
-    </div>
 
-    <!-- Modal Pop-up Simptom -->
-    <div id="symptomModal" class="modal">
-        <div class="modal-content">
-            <h2 id="selectedAnimalTitle">Pilih Simptom</h2>
-            <div class="symptom-grid">
-                <div class="symptom-box" onclick="toggleSymptom(this, 'Cacing')">Kurus / Perut Buncit (Cacing)</div>
-                <div class="symptom-box" onclick="toggleSymptom(this, 'Selsema')">Selsema / Batuk</div>
-                <div class="symptom-box" onclick="toggleSymptom(this, 'Kulit')">Gatal / Kurap / Kutu</div>
-                <div class="symptom-box" onclick="toggleSymptom(this, 'Cirit')">Cirit-Birit</div>
-                <div class="symptom-box" onclick="toggleSymptom(this, 'Luka')">Luka / Bengkak</div>
-            </div>
-            <button class="btn-submit" onclick="showMedicine()">LIHAT SENARAI UBAT</button>
-            <button class="btn-submit" style="background:red;" onclick="closeModal()">TUTUP</button>
+        <button class="btn" onclick="generateMeds()">CARI UBAT</button>
 
-            <div id="resultBox">
-                <h3>Cadangan Ubat:</h3>
-                <ul id="medicineList"></ul>
-            </div>
+        <div id="medListSection" style="margin-top:20px; display:none;">
+            <h3>Klik ubat untuk kira dos:</h3>
+            <div id="medOptions"></div>
         </div>
-    </div>
 
-    <script>
-        let currentAnimal = "";
-        let selectedSymptoms = [];
-
-        function openSymptom(animal) {
-            currentAnimal = animal;
-            document.getElementById('selectedAnimalTitle').innerText = "Simptom Untuk " + animal;
-            document.getElementById('symptomModal').style.display = "block";
-            document.getElementById('resultBox').style.display = "none";
-            // Reset selection
-            selectedSymptoms = [];
-            document.querySelectorAll('.symptom-box').forEach(box => box.classList.remove('active'));
-        }
-
-        function closeModal() {
-            document.getElementById('symptomModal').style.display = "none";
-        }
-
-        function toggleSymptom(element, symptom) {
-            element.classList.toggle('active');
-            if (selectedSymptoms.includes(symptom)) {
-                selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
-            } else {
-                selectedSymptoms.push(symptom);
-            }
-        }
-
-        function showMedicine() {
-            const list = document.getElementById('medicineList');
-            list.innerHTML = "";
+        <!-- Kalkulator Dos -->
+        <div id="calcBox">
+            <h3 style="color:white; text-shadow:none;">Kalkulator Dos <span id="activeMed"></span></h3>
+            <label>Berat Haiwan (kg):</label><br>
+            <input type="number" id="weight" placeholder="0"> kg<br>
             
-            if (selectedSymptoms.length === 0) {
-                alert("Sila pilih sekurang-kurangnya satu simptom!");
-                return;
-            }
+            <label>Dos Diperlukan (mg/kg):</label><br>
+            <input type="number" id="dosage" placeholder="cth: 5"> mg/kg<br>
 
-            const database = {
-                'Cacing': ['Drontal / Zantel (Kucing/Anjing)', 'Albendazole / Ivermectin (Lembu/Kambing)', 'Piperazine (Ayam)'],
-                'Selsema': ['Doxycycline', 'Clavamox', 'Oxytetracycline (Ternakan)'],
-                'Kulit': ['Spot-on Revolution', 'Ketoconazole Cream', 'Ivermectin Injection'],
-                'Cirit': ['Charcoal Tablet (Norit)', 'Kaolin & Pectin', 'Stress-aid (Ayam)'],
-                'Luka': ['Iodine Spray', 'Gusanex (Luka Berulat)', 'Butasyl (Bengkak)']
-            };
+            <label>Kepekatan Ubat (mg/ml):</label><br>
+            <input type="number" id="strength" placeholder="cth: 100"> mg/ml<br>
+            
+            <button class="btn" style="background:#4caf50;" onclick="calculate()">KIRA SEKARANG</button>
+            <span class="result-display" id="finalResult">0.00 ml</span>
+        </div>
 
-            selectedSymptoms.forEach(sym => {
-                database[sym].forEach(med => {
-                    let li = document.createElement('li');
-                    li.innerText = med;
-                    list.appendChild(li);
-                });
-            });
+        <button class="btn" style="background:#f44336; margin-top:20px;" onclick="closeModal()">TUTUP</button>
+    </div>
+</div>
 
-            document.getElementById('resultBox').style.display = "block";
+<script>
+    let selectedSymptoms = [];
+    const medData = {
+        'Cacing': ['Ivermectin 1%', 'Albendazole', 'Zantel'],
+        'Selsema': ['Oxytetracycline LA', 'Doxycycline', 'Enrofloxacin'],
+        'Kulit': ['Ketoconazole', 'Spot-on Treatment', 'Amitraz'],
+        'Cirit': ['Kaolin-Pectin', 'Charcoal Suspension', 'Sulpha-Q']
+    };
+
+    function openClinic(animal) {
+        document.getElementById('title').innerText = "Simptom " + animal;
+        document.getElementById('clinicModal').style.display = "block";
+        resetAll();
+    }
+
+    function closeModal() { document.getElementById('clinicModal').style.display = "none"; }
+
+    function toggleSym(el, sym) {
+        el.classList.toggle('active');
+        if (selectedSymptoms.includes(sym)) {
+            selectedSymptoms = selectedSymptoms.filter(s => s !== sym);
+        } else {
+            selectedSymptoms.push(sym);
         }
-    </script>
+    }
+
+    function generateMeds() {
+        const container = document.getElementById('medOptions');
+        container.innerHTML = "";
+        if(selectedSymptoms.length === 0) return alert("Pilih simptom dahulu!");
+
+        selectedSymptoms.forEach(s => {
+            medData[s].forEach(m => {
+                let div = document.createElement('div');
+                div.className = 'med-item';
+                div.innerText = m;
+                div.onclick = () => showCalc(m);
+                container.appendChild(div);
+            });
+        });
+        document.getElementById('medListSection').style.display = "block";
+    }
+
+    function showCalc(medName) {
+        document.getElementById('calcBox').style.display = "block";
+        document.getElementById('activeMed').innerText = "- " + medName;
+        document.getElementById('calcBox').scrollIntoView();
+    }
+
+    function calculate() {
+        const w = parseFloat(document.getElementById('weight').value);
+        const d = parseFloat(document.getElementById('dosage').value);
+        const s = parseFloat(document.getElementById('strength').value);
+
+        if(w > 0 && d > 0 && s > 0) {
+            // Formula: (Berat x Dos) / Kepekatan
+            const res = (w * d) / s;
+            document.getElementById('finalResult').innerText = res.toFixed(2) + " ml";
+        } else {
+            alert("Sila isi semua ruangan dengan betul!");
+        }
+    }
+
+    function resetAll() {
+        selectedSymptoms = [];
+        document.querySelectorAll('.sym-box').forEach(b => b.classList.remove('active'));
+        document.getElementById('medListSection').style.display = "none";
+        document.getElementById('calcBox').style.display = "none";
+        document.getElementById('finalResult').innerText = "0.00 ml";
+        document.querySelectorAll('input').forEach(i => i.value = "");
+    }
+</script>
+
 </body>
 </html>
