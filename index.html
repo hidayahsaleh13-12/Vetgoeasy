@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Diagnosis Haiwan</title>
+    <style>
+        /* Background Biru Cair */
+        body {
+            background-color: #e3f2fd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+        }
+
+        /* Tulisan Bold Glow Biru Pekat */
+        h1, h2 {
+            color: #0d47a1;
+            text-shadow: 0 0 10px rgba(13, 71, 161, 0.5);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Gaya Gambar Haiwan */
+        .animal-selection img {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .animal-selection img:hover {
+            transform: scale(1.1);
+            border-color: #0d47a1;
+        }
+
+        /* Pop-up Style Box */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #f0f8ff;
+            margin: 5% auto;
+            padding: 25px;
+            border: 5px solid #0d47a1;
+            width: 50%;
+            border-radius: 20px;
+            box-shadow: 0 0 20px #0d47a1;
+            position: relative;
+        }
+
+        /* Box Simptom */
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .symptom-box {
+            background: white;
+            border: 2px solid #0d47a1;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .symptom-box.active {
+            background: #0d47a1;
+            color: white;
+        }
+
+        .btn-submit {
+            background: #0d47a1;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #resultBox {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            color: #0d47a1;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SISTEM MAKLUMAT UBAT HAIWAN</h1>
+        <p>Sila pilih jenis haiwan:</p>
+        
+        <div class="animal-selection">
+            <img src="https://flaticon.com" alt="Kucing" onclick="openSymptom('Kucing')">
+            <img src="https://flaticon.com" alt="Anjing" onclick="openSymptom('Anjing')">
+            <img src="https://flaticon.com" alt="Lembu" onclick="openSymptom('Lembu')">
+            <img src="https://flaticon.com" alt="Kambing" onclick="openSymptom('Kambing')">
+            <img src="https://flaticon.com" alt="Ayam" onclick="openSymptom('Ayam')">
+        </div>
+    </div>
+
+    <!-- Modal Pop-up Simptom -->
+    <div id="symptomModal" class="modal">
+        <div class="modal-content">
+            <h2 id="selectedAnimalTitle">Pilih Simptom</h2>
+            <div class="symptom-grid">
+                <div class="symptom-box" onclick="toggleSymptom(this, 'Cacing')">Kurus / Perut Buncit (Cacing)</div>
+                <div class="symptom-box" onclick="toggleSymptom(this, 'Selsema')">Selsema / Batuk</div>
+                <div class="symptom-box" onclick="toggleSymptom(this, 'Kulit')">Gatal / Kurap / Kutu</div>
+                <div class="symptom-box" onclick="toggleSymptom(this, 'Cirit')">Cirit-Birit</div>
+                <div class="symptom-box" onclick="toggleSymptom(this, 'Luka')">Luka / Bengkak</div>
+            </div>
+            <button class="btn-submit" onclick="showMedicine()">LIHAT SENARAI UBAT</button>
+            <button class="btn-submit" style="background:red;" onclick="closeModal()">TUTUP</button>
+
+            <div id="resultBox">
+                <h3>Cadangan Ubat:</h3>
+                <ul id="medicineList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAnimal = "";
+        let selectedSymptoms = [];
+
+        function openSymptom(animal) {
+            currentAnimal = animal;
+            document.getElementById('selectedAnimalTitle').innerText = "Simptom Untuk " + animal;
+            document.getElementById('symptomModal').style.display = "block";
+            document.getElementById('resultBox').style.display = "none";
+            // Reset selection
+            selectedSymptoms = [];
+            document.querySelectorAll('.symptom-box').forEach(box => box.classList.remove('active'));
+        }
+
+        function closeModal() {
+            document.getElementById('symptomModal').style.display = "none";
+        }
+
+        function toggleSymptom(element, symptom) {
+            element.classList.toggle('active');
+            if (selectedSymptoms.includes(symptom)) {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== symptom);
+            } else {
+                selectedSymptoms.push(symptom);
+            }
+        }
+
+        function showMedicine() {
+            const list = document.getElementById('medicineList');
+            list.innerHTML = "";
+            
+            if (selectedSymptoms.length === 0) {
+                alert("Sila pilih sekurang-kurangnya satu simptom!");
+                return;
+            }
+
+            const database = {
+                'Cacing': ['Drontal / Zantel (Kucing/Anjing)', 'Albendazole / Ivermectin (Lembu/Kambing)', 'Piperazine (Ayam)'],
+                'Selsema': ['Doxycycline', 'Clavamox', 'Oxytetracycline (Ternakan)'],
+                'Kulit': ['Spot-on Revolution', 'Ketoconazole Cream', 'Ivermectin Injection'],
+                'Cirit': ['Charcoal Tablet (Norit)', 'Kaolin & Pectin', 'Stress-aid (Ayam)'],
+                'Luka': ['Iodine Spray', 'Gusanex (Luka Berulat)', 'Butasyl (Bengkak)']
+            };
+
+            selectedSymptoms.forEach(sym => {
+                database[sym].forEach(med => {
+                    let li = document.createElement('li');
+                    li.innerText = med;
+                    list.appendChild(li);
+                });
+            });
+
+            document.getElementById('resultBox').style.display = "block";
+        }
+    </script>
+</body>
+</html>
