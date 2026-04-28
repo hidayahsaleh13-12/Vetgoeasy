@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Veterinar Pintar</title>
+    <title>Sistem Veterinar Pintar Pro</title>
     <style>
+        /* ASAS & LATAR BELAKANG */
         body {
             background-color: #e3f2fd;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,9 +17,10 @@
             padding: 20px;
         }
 
+        /* TULISAN BOLD GLOW BIRU PEKAT */
         h1, h2, h3 {
             color: #0d47a1;
-            text-shadow: 0 0 10px rgba(13, 71, 161, 0.3);
+            text-shadow: 0 0 12px rgba(13, 71, 161, 0.4);
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
@@ -38,10 +40,11 @@
             border: 3px solid #0d47a1;
             padding: 12px;
             border-radius: 15px;
-            width: 80%;
+            width: 85%;
             font-weight: bold;
             color: #0d47a1;
             outline: none;
+            text-align: center;
         }
 
         .animal-row {
@@ -55,6 +58,7 @@
         .animal-icon { cursor: pointer; transition: 0.3s; }
         .animal-icon:hover { transform: scale(1.3); }
 
+        /* MODAL RAWATAN */
         .modal {
             display: none;
             position: fixed;
@@ -74,36 +78,6 @@
             max-width: 450px;
             border-radius: 25px;
             box-shadow: 0 0 30px #0d47a1;
-        }
-
-        /* CUSTOM POP-UP JAWAPAN */
-        #customAlert {
-            display: none;
-            position: fixed;
-            z-index: 200;
-            left: 50%; top: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #e3f2fd;
-            border: 4px solid #0d47a1;
-            box-shadow: 0 0 20px #0d47a1;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            width: 300px;
-        }
-
-        #customAlert h2 {
-            color: #0d47a1;
-            font-weight: bold;
-            margin-top: 0;
-            text-shadow: 0 0 8px rgba(13, 71, 161, 0.2);
-        }
-
-        #alertMessage {
-            color: #0d47a1;
-            font-weight: bold;
-            font-size: 24px;
-            margin: 20px 0;
         }
 
         .symptom-grid {
@@ -138,6 +112,7 @@
             text-align: left;
         }
 
+        /* KALKULATOR DOS */
         #calcArea {
             background: #0d47a1;
             color: white;
@@ -148,8 +123,26 @@
         }
 
         .input-row { margin-bottom: 15px; text-align: left; }
+        .input-row label { font-weight: bold; font-size: 0.9em; display: block; margin-bottom: 5px; }
         .input-row input { 
-            width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; box-sizing: border-box; margin-top: 5px;
+            width: 100%; padding: 10px; border-radius: 8px; border: none; font-weight: bold; box-sizing: border-box; 
+        }
+
+        /* INPUT mg/ml & % (TULISAN PUTIH BOLD) */
+        #str_mg, #str_pct {
+            color: white !important;
+            font-weight: bold !important;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            outline: none;
+        }
+
+        #str_mg::placeholder, #str_pct::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .btn {
@@ -162,10 +155,40 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
+            font-size: 16px;
         }
 
         .btn-kira { background: #4caf50; }
-        .btn-tutup { background: #f44336; }
+        .btn-tutup { background: #f44336; margin-top: 15px; }
+
+        /* POP-UP JAWAPAN (BIRU CAIR, GLOW, DARK BLUE TEXT) */
+        #customAlert {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #e3f2fd; /* Biru Cair */
+            border: 5px solid #0d47a1; /* Outline Dark Blue */
+            box-shadow: 0 0 25px #0d47a1; /* Glow Dark Blue */
+            padding: 35px;
+            border-radius: 25px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        #customAlert h2 {
+            color: #0d47a1; /* Dark Blue */
+            margin-bottom: 15px;
+        }
+
+        #alertMessage {
+            color: #0d47a1; /* Dark Blue */
+            font-weight: bold;
+            font-size: 30px;
+            margin: 20px 0;
+            text-shadow: none;
+        }
     </style>
 </head>
 <body>
@@ -173,8 +196,8 @@
 <div class="main-container">
     <h1>VET CALCULATOR PRO</h1>
     <div style="margin-bottom: 20px;">
-        <p style="color: #0d47a1; font-weight: bold;">Taip Nama Haiwan:</p>
-        <input type="text" id="animalCmd" placeholder="Kucing, Lembu, dll..." oninput="handleCommand()">
+        <p style="color: #0d47a1; font-weight: bold;">Taip Nama Haiwan (Kucing, Lembu, dll):</p>
+        <input type="text" id="animalCmd" placeholder="..." oninput="handleCommand()">
     </div>
     <div class="animal-row">
         <span class="animal-icon" onclick="openApp('KUCING')">🐱</span>
@@ -198,24 +221,28 @@
         <div id="medListSection" style="display:none;">
             <div id="medOptions"></div>
         </div>
+        
         <div id="calcArea">
             <div class="input-row"><label>Berat Haiwan (kg):</label><input type="number" id="weight"></div>
             <div class="input-row"><label>Dose Diperlukan (mg/kg):</label><input type="number" id="dose_req"></div>
-            <div style="display:flex; gap:10px;">
+            
+            <label style="font-size: 0.8em; margin-bottom: 5px; display: block;">Kepekatan Ubat (Isi Salah Satu):</label>
+            <div style="display:flex; gap:10px; margin-bottom: 10px;">
                 <input type="number" id="str_mg" placeholder="mg/ml" oninput="autoClear('pct')">
                 <input type="number" id="str_pct" placeholder="%" oninput="autoClear('mg')">
             </div>
+            
             <button class="btn btn-kira" onclick="calculateDosage()">KIRA SEKARANG</button>
         </div>
-        <button class="btn btn-tutup" onclick="closeApp()">TUTUP</button>
+        <button class="btn btn-tutup" onclick="closeApp()">KEMBALI</button>
     </div>
 </div>
 
-<!-- POP-UP JAWAPAN TEMA BIRU -->
+<!-- POP-UP JAWAPAN TEMA KHAS -->
 <div id="customAlert">
     <h2>HASIL KIRAAN</h2>
     <div id="alertMessage">0.00 ml</div>
-    <button class="btn" onclick="closeAlert()">OK</button>
+    <button class="btn" onclick="closeAlert()" style="width: 100px;">OK</button>
 </div>
 
 <script>
@@ -236,6 +263,7 @@
     function openApp(name) { selectedAnimal = name; document.getElementById('modalTitle').innerText = "Rawatan " + name; document.getElementById('treatmentModal').style.display = "block"; resetFields(); }
     function closeApp() { document.getElementById('treatmentModal').style.display = "none"; }
     function toggleSym(el, sym) { el.classList.toggle('active'); if(activeSymptoms.includes(sym)) activeSymptoms = activeSymptoms.filter(i => i !== sym); else activeSymptoms.push(sym); updateMedList(); }
+    
     function updateMedList() {
         const listDiv = document.getElementById('medOptions'); listDiv.innerHTML = "";
         if(activeSymptoms.length === 0) { document.getElementById('medListSection').style.display = "none"; return; }
@@ -245,7 +273,11 @@
         });}});
         document.getElementById('medListSection').style.display = "block";
     }
-    function autoClear(type) { if(type === 'pct') document.getElementById('str_pct').value = ""; else document.getElementById('str_mg').value = ""; }
+
+    function autoClear(type) { 
+        if(type === 'pct') document.getElementById('str_pct').value = ""; 
+        else document.getElementById('str_mg').value = ""; 
+    }
     
     function calculateDosage() {
         const w = parseFloat(document.getElementById('weight').value);
@@ -253,14 +285,23 @@
         const mg = parseFloat(document.getElementById('str_mg').value);
         const pct = parseFloat(document.getElementById('str_pct').value);
         let s = mg > 0 ? mg : pct * 10;
+        
         if(w > 0 && d > 0 && s > 0) {
             let res = ((w * d) / s).toFixed(2) + " ml";
             document.getElementById('alertMessage').innerText = res;
             document.getElementById('customAlert').style.display = "block";
         } else { alert("Sila isi semua maklumat!"); }
     }
+
     function closeAlert() { document.getElementById('customAlert').style.display = "none"; }
-    function resetFields() { activeSymptoms = []; document.querySelectorAll('.sym-box').forEach(b => b.classList.remove('active')); document.getElementById('medListSection').style.display = "none"; document.getElementById('calcArea').style.display = "none"; document.querySelectorAll('input').forEach(i => i.value = ""); }
+    
+    function resetFields() { 
+        activeSymptoms = []; 
+        document.querySelectorAll('.sym-box').forEach(b => b.classList.remove('active')); 
+        document.getElementById('medListSection').style.display = "none"; 
+        document.getElementById('calcArea').style.display = "none"; 
+        document.querySelectorAll('input').forEach(i => i.value = ""); 
+    }
 </script>
 </body>
 </html>
